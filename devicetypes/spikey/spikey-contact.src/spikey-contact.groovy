@@ -38,11 +38,10 @@ def configure() {
 	return zigbee.batteryConfig() + zigbee.temperatureConfig(30, 300)
 }
 
-// Parse incoming device messages to generate events
 def parse(String description) {
     log.debug "description: $description"
-    def name = "contact"
-    def value = null
+    String name = "contact"
+    String value = null
     if (description == "zone status 0x0021 -- extended status 0x00" || description == "zone status 0x0025 -- extended status 0x00") {
     	// Open event
         value = "open"

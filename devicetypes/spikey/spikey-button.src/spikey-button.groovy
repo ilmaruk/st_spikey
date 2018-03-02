@@ -5,7 +5,8 @@ metadata {
         capability "Temperature Measurement"
         capability "Battery"
 
-        fingerprint profileId: "0104", inClusters: "0000, 0001, 0003, 0020, 0402", outClusters: "0006", manufacturer: "AlertMe.com", model: "BTN00140004", deviceJoinName: "Spikey Button"
+        fingerprint profileId: "0104", inClusters: "0000, 0001, 0003, 0020, 0402", outClusters: "0006",
+                manufacturer: "AlertMe.com", model: "BTN00140004", deviceJoinName: "Spikey Button"
     }
 
     tiles {
@@ -16,7 +17,6 @@ metadata {
     }
 }
 
-// Parse incoming device messages to generate events
 def parse(String description) {
     log.debug "description: $description"
 }
