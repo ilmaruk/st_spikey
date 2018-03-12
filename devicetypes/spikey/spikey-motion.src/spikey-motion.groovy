@@ -82,7 +82,7 @@ def parse(String description) {
 		descriptionText = isActive ? "${device.displayName} detected motion" : "${device.displayName} motion has stopped"
         
         if (isActive) {
-        	runIn(30, resetStatus)
+        	runIn(28, resetStatus)
         }
 	}
 

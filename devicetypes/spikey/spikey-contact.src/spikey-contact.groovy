@@ -12,7 +12,7 @@ metadata {
     }
 
     tiles(scale: 2) {
-        standardTile("contact", "device.contact", width: 4, height: 4) {
+        standardTile("contact", "device.contact", width: 4, height: 4, canChangeIcon: true) {
             state("closed", label: "Closed", icon: "st.contact.contact.closed", backgroundColor: "#00c000")
             state("open", label: "Open", icon: "st.contact.contact.open", backgroundColor: "#c00000")
         }
