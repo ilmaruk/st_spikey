@@ -26,24 +26,26 @@ metadata {
 }
 
 def parse(String description) {
+	log.info "Parsing message: $description"
+    
 	Map descMap = zigbee.parseDescriptionAsMap(description)
+    log.debug "Ignored event: $descMap"
     if (descMap.commandInt == 2) {
+        // We're only interested in toggle commands
         String newState = device.currentValue("switch") == "on" ? "off" : "on"
-        def event = createEvent(name: "switch", value: newState)
-        log.debug event
-        return event
-    } else {
-	    log.warn "Ignored event: $description"
+        return createEvent(name: "switch", value: newState)
     }
 }
 
 def refresh() {
+    log.info "Refreshing reporting and bindings."
+
     return zigbee.readAttribute(0x0006, 0x0000) +
         zigbee.configureReporting(0x0006, 0x0000, 0x10, 0, 600, null)
 }
 
 def configure() {
-    log.debug "Configuring Reporting and Bindings."
+    log.info "Configuring reporting and bindings."
 
     return zigbee.configureReporting(0x0006, 0x0000, 0x10, 0, 600, null) +
         zigbee.readAttribute(0x0006, 0x0000)
