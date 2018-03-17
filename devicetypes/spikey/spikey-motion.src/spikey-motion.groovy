@@ -1,5 +1,6 @@
 metadata {
     definition (name: "Spikey Motion", namespace: "spikey", author: "ilmaruk") {
+    	capability "Actuator"
         capability "Signal Strength"
         capability "Motion Sensor"
         capability "Sensor"
@@ -7,19 +8,18 @@ metadata {
         capability "Temperature Measurement"
         capability "Configuration"
         capability "Refresh"
+        
+        command "identify"
 
         fingerprint profileId: "0104", inClusters: "0000, 0001, 0003, 0020, 0402, 0406, 0500", manufacturer: "AlertMe.com", model: "PIR00140005", deviceJoinName: "Spikey Motion"
     }
 
-    tiles {
-        standardTile("motion", "device.motion", width: 3, height: 2) {
+    tiles(scale: 2) {
+        standardTile("motion", "device.motion", width: 4, height: 4) {
             state("active", label: "Motion", icon: "st.motion.motion.active", backgroundColor: "#53a7c0")
             state("inactive", label: "No Motion", icon: "st.motion.motion.inactive", backgroundColor: "#ffffff")
         }
-        standardTile("refresh", "device.motion", inactiveLabel: false, decoration: "flat", width: 1, height: 1) {
-            state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh"
-        }
-        valueTile("temperature", "device.temperature", inactiveLabel: false, width: 1, height: 1) {
+        valueTile("temperature", "device.temperature", inactiveLabel: false, width: 2, height: 2) {
 			state "temperature", label:'${currentValue}C', unit: "C",
 			backgroundColors:[
 				[value: 0, color: "#153591"],
@@ -31,10 +31,24 @@ metadata {
 				[value: 36, color: "#bc2323"]
 			]
 		}
-        valueTile("battery", "device.battery", decoration: "flat", inactiveLabel: false, width: 1, height: 1) {
-			state "battery", label: '${currentValue}%', unit: ""
+        valueTile("battery", "device.battery", inactiveLabel: false, width: 2, height: 2) {
+			state "battery", label: 'Battery ${currentValue}%', unit: "%"
+			backgroundColors:[
+				[value: 0, color: "#ff0000"],
+				[value: 50, color: "#dd4400"],
+				[value: 60, color: "#aa4400"],
+				[value: 79, color: "#888800"],
+				[value: 80, color: "#44dd00"],
+				[value: 90, color: "#00ff00"]
+			]
 		}
-        main(["motion", "temperature", "refresh", "battery"])
+        standardTile("identify", "device.motion", inactiveLabel: false, decoration: "flat", width: 3, height: 2) {
+            state "default", label:"", action:"identify", icon:"st.secondary.beep"
+        }
+        standardTile("refresh", "device.motion", inactiveLabel: false, decoration: "flat", width: 3, height: 2) {
+            state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh"
+        }
+        main "motion"
     }
 }
 
@@ -131,4 +145,9 @@ def resetStatus() {
 def ping() {
 	log.trace "ZigBee DTH - Executing ping() for device ${device.displayName}"
 	refresh()
+}
+
+def identify() {
+	log.debug "Setting the device into identification mode for 30 seconds."
+	zigbee.writeAttribute(0x0003, 0x0000, 0x21, 30)
 }
